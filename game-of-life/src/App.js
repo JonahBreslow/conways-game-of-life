@@ -4,6 +4,7 @@ import Board from './components/Board';
 import './App.css';
 
 function updateBoard(board) {
+  console.log('updateBoard called with board:', board);
   axios.post('http://localhost:8081/update-board', board)
     .then(response => {
       // handle the updated board returned by the backend
@@ -21,11 +22,11 @@ function App() {
   const [cols, setCols] = useState(100);
   const [isRunning, setIsRunning] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const [setIntervalId, setIntervalId] = useState(null); // changed from destructuring assignment
+  const [intervalId, setIntervalId] = useState(null);
 
   // Initialize board on mount
   useEffect(() => {
-    const initialBoard = initializeBoard(0, rows, cols);
+    const initialBoard = initializeBoard(false, rows, cols);
     setBoard(initialBoard);
   }, [rows, cols]);
 
@@ -52,13 +53,14 @@ function App() {
 
   // Function to start animation
   const startAnimation = () => {
+    console.log('Start animation called');
     if (isBoardModified) {
       setIsRunning(true);
       setHasStarted(true);
-      const intervalId = setInterval(() => {
+      const id = setInterval(() => {
         updateBoard(board);
       }, 1000);
-      setIntervalId(intervalId); // changed from destructuring assignment
+      setIntervalId(id);
     } else {
       alert('Please modify the board before starting the game.');
     }
@@ -67,7 +69,7 @@ function App() {
   // Function to stop animation
   const stopAnimation = () => {
     setIsRunning(false);
-    clearInterval(intervalId); // changed from using setIntervalId
+    clearInterval(intervalId);
   };
 
   return (
